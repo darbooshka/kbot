@@ -2,7 +2,7 @@ APP=$(shell basename $(shell git remote get-url origin))
 REGISTRY=darbooshka
 VERSION=$(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
 TARGETOS=linux #linux darwin windows
-TARGETARCH=arm64 #amd64
+TARGETARCH=amd64 #amd64 arm64
 
 format:
 	gofmt -s -w ./
@@ -24,5 +24,16 @@ image:
 
 push:
 	docker push ${REGISTRY}/${APP}:${VERSION}-${TARGETARCH}
+
 clean:
 	rm -rf kbot
+	docker rmi ${REGISTRY}/${APP}:${VERSION}-${TARGETARCH}
+
+linux:
+	$(eval TARGETOS=linux)
+
+macos:
+	$(eval TARGETOS=darwin)
+
+windows:
+	$(eval TARGETOS=windows)
