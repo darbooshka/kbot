@@ -20,9 +20,9 @@ var (
 
 // kbotCmd represents the kbot command
 var kbotCmd = &cobra.Command{
-	Use:   "kbot",
-	Aliases: []string {"start"},
-	Short: "A brief description of your command",
+	Use:     "kbot",
+	Aliases: []string{"start"},
+	Short:   "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -45,14 +45,14 @@ to quickly create a Cobra application.`,
 		}
 		kbot.Handle(telebot.OnText, func(m telebot.Context) error {
 			log.Printf(m.Message().Payload, m.Text())
-			
+
 			payload := m.Message().Payload
 			switch payload {
 			case "hello":
 				err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!", appVersion))
-				
+
 			}
-			
+
 			return err
 		})
 		kbot.Start()
