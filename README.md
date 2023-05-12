@@ -28,3 +28,15 @@ To build for arm run the following command:
 ```
 $ make build TARGETARCH=arm64
 ```
+
+To make Docker container image for MacOs arm run the following command:
+
+```
+$ make macos image TARGETARCH=arm64
+```
+
+To make Docker container image for Windows arm run the following command:
+
+```
+$ make windows image TARGETARCH=arm64
+```
