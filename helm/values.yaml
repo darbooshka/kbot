@@ -3,13 +3,11 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-
 image:
   repository: darbooshka
   pullPolicy: IfNotPresent
-  tag: "v1.0.6-3e297eb"
+  tag: "v1.0.6-35b6f69"
   arch: amd64
-
 secret:
   name: kbot
   key: token
