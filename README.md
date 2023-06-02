@@ -40,3 +40,12 @@ To make Docker container image for Windows arm run the following command:
 ```
 $ make windows image TARGETARCH=arm64
 ```
+
+
+[Telegram Bot Service](1.jpg)
+
+[ArgoCD](2.jpg)
+
+[KBOT-CICD](3.jpg)
+
+[KBOT-CICD](4.jpg)
