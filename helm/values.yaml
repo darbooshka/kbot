@@ -4,9 +4,11 @@
 
 replicaCount: 1
 image:
-  repository: ghcr.io/darbooshka
+  registry: "ghcr.io"
+  repository: "darbooshka"
   pullPolicy: IfNotPresent
   tag: "v1.0.6-99a543e"
+  os: linux
   arch: amd64
 secret:
   name: kbot
