@@ -6,7 +6,7 @@ replicaCount: 1
 image:
   repository: darbooshka
   pullPolicy: IfNotPresent
-  tag: "v1.0.6-35b6f69"
+  tag: "v1.0.6-dfc58b9"
   arch: amd64
 secret:
   name: kbot
