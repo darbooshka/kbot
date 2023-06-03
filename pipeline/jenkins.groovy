@@ -4,6 +4,9 @@ pipeline {
         REPO = 'https://github.com/darbooshka/kbot'
         BRANCH = 'main'
     }
+    parameters {
+        choice(name: 'OS', choices: ['linux', 'darwin', 'windows', 'all'], description: 'Pick OS')
+    }
     stages{
         
         stage ("clone") {
