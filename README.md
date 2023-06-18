@@ -1,6 +1,6 @@
 # kbot
 
-devops application from scratch
+Devops application from scratch
 
 
 # build instructions
