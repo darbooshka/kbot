@@ -45,7 +45,7 @@ jobs:
          cmd: |
            yq -i '.image.tag=strenv(VERSION)' helm/values.yaml ;
            yq -i '.version=strenv(VERSION)' helm/Chart.yaml ;
-           yq -i '.kbot.image=darbooshka/kbot:strenv(VERSION)' otel/docker-compose.yaml
+           yq -i '.kbot.image=darbooshka/kbot:strenv(VERSION)-amd64' otel/docker-compose.yaml
          
     - run: |           
         git config user.name github-actions
