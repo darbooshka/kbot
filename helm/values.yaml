@@ -12,3 +12,6 @@ secret:
   name: kbot
   key: token
   env: TELE_TOKEN
+metrics:
+  env: METRICS_HOST
+  config: collector:4317

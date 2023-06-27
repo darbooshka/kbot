@@ -1,6 +1,9 @@
 name: KBOT-CICD
 
-on: push
+on:
+  push:
+    tags-ignore:
+      - '**'
 
 jobs:
   ci:
