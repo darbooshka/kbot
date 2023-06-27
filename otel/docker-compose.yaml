@@ -2,7 +2,7 @@ version: "3"
 services:
   # Kbot
   kbot:
-    image: darbooshka/kbot:v1.0.6-9fbdfc4-amd64
+    image: darbooshka/kbot:v1.0.7-add35ee-amd64
     environment:
       - METRICS_HOST=collector:4317
       - TELE_TOKEN=${TELE_TOKEN}
