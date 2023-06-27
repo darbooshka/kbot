@@ -61,11 +61,11 @@ func initMetrics(ctx context.Context) {
 }
 
 func pmetrics(ctx context.Context, payload string) {
-	// Get the global MeterProvider and create a new Meter with the name "kbot_light_signal_counter"
-	meter := otel.GetMeterProvider().Meter("kbot_light_signal_counter")
+	// Get the global MeterProvider and create a new Meter with the name "kbot_greeting_counter"
+	meter := otel.GetMeterProvider().Meter("kbot_greeting_counter")
 
-	// Get or create an Int64Counter instrument with the name "kbot_light_signal_<payload>"
-	counter, _ := meter.Int64Counter(fmt.Sprintf("kbot_light_signal_%s", payload))
+	// Get or create an Int64Counter instrument with the name "kbot_greeting_<payload>"
+	counter, _ := meter.Int64Counter(fmt.Sprintf("kbot_greeting_%s", payload))
 
 	// Add a value of 1 to the Int64Counter
 	counter.Add(ctx, 1)
@@ -119,7 +119,8 @@ to quickly create a Cobra application.`,
 				err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!", appVersion))
 			case "hi":
 				err = m.Send(fmt.Sprintf("Hi I'm Kbot %s!", appVersion))
-
+			case "hey":
+				err = m.Send(fmt.Sprintf("Hey I'm Kbot %s!", appVersion))
 			}
 
 			return err
