@@ -14,4 +14,4 @@ secret:
   env: TELE_TOKEN
 metrics:
   env: METRICS_HOST
-  config: collector:4317
+  config: collector.otel-monitoring.svc.cluster.local:4317
