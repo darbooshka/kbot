@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks":[
+        {
+            "label": "make_build",
+            "command": "make",
+            "args": [ "build" ],
+            "type": "shell"
+        }
+    ]
+}

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -97,7 +98,7 @@ to quickly create a Cobra application.`,
 			logger.Fatal().Str("Error", err.Error()).Msg("Please check TELE_TOKEN")
 			return
 		} else {
-		    fmt.Println("kbot is started", appVersion)
+			fmt.Println("kbot is started", appVersion)
 			logger.Info().Str("Version", appVersion).Msg("kbot started")
 
 		}
@@ -111,16 +112,40 @@ to quickly create a Cobra application.`,
 			log.Printf(m.Message().Payload, m.Text())
 			logger.Info().Str("Payload", m.Text()).Msg(m.Message().Payload)
 
-			payload := m.Message().Payload
-			pmetrics(context.Background(), payload)
+			message := m.Message()
+			payload := message.Payload
+			text := m.Text()
 
-			switch payload {
-			case "hello":
-				err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!", appVersion))
-			case "hi":
-				err = m.Send(fmt.Sprintf("Hi I'm Kbot %s!", appVersion))
-			case "hey":
-				err = m.Send(fmt.Sprintf("Hey I'm Kbot %s!", appVersion))
+			var command string
+
+			if matches := regexp.MustCompile(`^/(\w+)`).FindStringSubmatch(text); len(matches) > 1 {
+				command = matches[1]
+			}
+
+			switch command {
+
+			case "add_event":
+				err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!\n You're adding event:\n\n\n%s", appVersion, payload))
+
+			case "sort_events":
+				err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!\n You're sorting your added events", appVersion))
+
+			case "help":
+				err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!\n Help and assistance is coming soon!", appVersion))
+
+			case "feedback":
+				err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!\n Your opinion matters to us", appVersion))
+
+			case "start":
+				pmetrics(context.Background(), payload)
+				switch payload {
+				case "hello":
+					err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!", appVersion))
+				case "hi":
+					err = m.Send(fmt.Sprintf("Hi I'm Kbot %s!", appVersion))
+				case "hey":
+					err = m.Send(fmt.Sprintf("Hey I'm Kbot %s!", appVersion))
+				}
 			}
 
 			return err
@@ -132,7 +157,7 @@ to quickly create a Cobra application.`,
 func init() {
 	ctx := context.Background()
 	initMetrics(ctx)
-	
+
 	rootCmd.AddCommand(kbotCmd)
 
 	// Here you will define your flags and configuration settings.

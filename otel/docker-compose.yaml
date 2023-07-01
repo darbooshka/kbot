@@ -1,11 +1,11 @@
 version: "3"
 services:
   # Kbot
-  kbot:
-    image: darbooshka/kbot:v1.0.8-7d6e2ec-amd64
-    environment:
-      - METRICS_HOST=collector:4317
-      - TELE_TOKEN=${TELE_TOKEN}
+  # kbot:
+  #   image: darbooshka/kbot:v1.0.8-7d6e2ec-amd64
+  #   environment:
+  #     - METRICS_HOST=collector:4317
+  #     - TELE_TOKEN=${TELE_TOKEN}
   # OTEL contrib collector for Laki
   collector:
     image: otel/opentelemetry-collector-contrib:0.78.0
