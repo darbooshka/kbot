@@ -1,0 +1,6 @@
+{
+    "secrets.enabledFolders": [
+        "default",
+        "pmbot"
+    ]
+}

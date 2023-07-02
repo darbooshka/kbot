@@ -1,14 +1,5 @@
 {
     "version": "0.2.0",
-    "inputs": [
-        {
-            "type": "promptString",
-            "id": "TELE_TOKEN",
-            "description": "TELE_TOKEN.",
-            "password": true,
-            "default": "see bitwarden"
-        }
-    ],
     "configurations": [
         {
             "name": "Launch Package (./kbot start)",
@@ -17,9 +8,8 @@
             "request": "launch",
             "mode": "auto",
             "program": "main.go",
-            // "stopOnEntry": true,
+            "console": "integratedTerminal",
             "env": {
-                "TELE_TOKEN": "${input:TELE_TOKEN}",
                 "METRICS_HOST": "localhost:4317"
             },
             "args": [ "start" ]
