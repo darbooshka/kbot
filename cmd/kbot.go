@@ -9,7 +9,7 @@ import (
 	"log"
 	"os"
 	"regexp"
-	"time"
+	time "time"
 
 	"github.com/spf13/cobra"
 
@@ -72,6 +72,19 @@ func pmetrics(ctx context.Context, payload string) {
 	counter.Add(ctx, 1)
 }
 
+func addEventToDataBase(c telebot.Context) error {
+	err := c.Send(fmt.Sprintf("Hello I'm PMbot %s!\n You're adding event:\n\n\n%s", appVersion, c.Text()))
+	fmt.Println(err)
+
+	userID := c.Sender().ID
+	eventTime := time.Date(2009, 11, 17, 20, 34, 58, 651387237, time.UTC)
+	rawdata := c.Text()
+
+	fmt.Printf("adding to db: %d %s %s", userID, eventTime, rawdata)
+
+	return err
+}
+
 // kbotCmd represents the kbot command
 var kbotCmd = &cobra.Command{
 	Use:     "kbot",
@@ -103,53 +116,83 @@ to quickly create a Cobra application.`,
 
 		}
 
-		// if err != nil {
-		// 	log.Fatalf("Please check TELE_TOKEN env variable. %s", err)
-		// 	return
+		commands := []telebot.Command{
+			{
+				Text:        "/start",
+				Description: "Привітаннячко!",
+			}, {
+				Text:        "/add_event",
+				Description: "Додати подію",
+			}, {
+				Text:        "/sort_events",
+				Description: "Сортувати події",
+			}, {
+				Text:        "help",
+				Description: "Допомога",
+			}, {
+				Text:        "feedback",
+				Description: "Відгук",
+			},
+		}
+		err0 := kbot.SetCommands(commands)
+		fmt.Println(err0)
 
-		// }
-		kbot.Handle(telebot.OnText, func(m telebot.Context) error {
-			log.Printf(m.Message().Payload, m.Text())
-			logger.Info().Str("Payload", m.Text()).Msg(m.Message().Payload)
+		kbot.Handle("/start", func(c telebot.Context) error {
+			payload := c.Message().Payload
+			pmetrics(context.Background(), payload)
+			fmt.Println(payload) // <PAYLOAD>
+			log.Printf(payload, c.Text())
+			logger.Info().Str("Payload", c.Text()).Msg(payload)
 
-			message := m.Message()
-			payload := message.Payload
-			text := m.Text()
-
-			var command string
-
-			if matches := regexp.MustCompile(`^/(\w+)`).FindStringSubmatch(text); len(matches) > 1 {
-				command = matches[1]
-			}
-
-			switch command {
-
-			case "add_event":
-				err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!\n You're adding event:\n\n\n%s", appVersion, payload))
-
-			case "sort_events":
-				err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!\n You're sorting your added events", appVersion))
-
-			case "help":
-				err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!\n Help and assistance is coming soon!", appVersion))
-
-			case "feedback":
-				err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!\n Your opinion matters to us", appVersion))
-
-			case "start":
-				pmetrics(context.Background(), payload)
-				switch payload {
-				case "hello":
-					err = m.Send(fmt.Sprintf("Hello I'm Kbot %s!", appVersion))
-				case "hi":
-					err = m.Send(fmt.Sprintf("Hi I'm Kbot %s!", appVersion))
-				case "hey":
-					err = m.Send(fmt.Sprintf("Hey I'm Kbot %s!", appVersion))
-				}
+			switch payload {
+			case "hello":
+				err = c.Send(fmt.Sprintf("Hello I'm PMbot %s!", appVersion))
+			case "hi":
+				err = c.Send(fmt.Sprintf("Hi I'm PMbot %s!", appVersion))
+			case "hey":
+				err = c.Send(fmt.Sprintf("Hey I'm PMbot %s!", appVersion))
 			}
 
 			return err
 		})
+
+		kbot.Handle("/help", func(c telebot.Context) error {
+			err = c.Send(fmt.Sprintf("Hello I'm PMbot %s!\n Help and assistance is coming soon!", appVersion))
+			return nil
+		})
+
+		kbot.Handle("/feedback", func(c telebot.Context) error {
+			err = c.Send(fmt.Sprintf("Hello I'm PMbot %s!\n Your opinion matters to us", appVersion))
+			return nil
+		})
+
+		kbot.Handle("/sort_events", func(c telebot.Context) error {
+			err = c.Send(fmt.Sprintf("Hello I'm PMbot %s!\n You're sorting your added events", appVersion))
+			fmt.Println(c.Message().Payload) // <PAYLOAD>
+			return nil
+		})
+
+		kbot.Handle("/add_event", func(c telebot.Context) error {
+			return addEventToDataBase(c)
+		})
+
+		kbot.Handle(telebot.OnText, func(c telebot.Context) error {
+			var command string
+			if matches := regexp.MustCompile(`^/(\w+)`).FindStringSubmatch(c.Text()); len(matches) > 1 {
+				command = matches[1]
+			}
+			fmt.Println(command, c.Message().Payload) // <PAYLOAD>
+
+			switch command {
+			default:
+				err = c.Send(fmt.Sprintf("Hey I'm PMbot %s!\nYou've sent unknown command: /%s", appVersion, command))
+			case "":
+				err = addEventToDataBase(c)
+			}
+
+			return err
+		})
+
 		kbot.Start()
 	},
 }
@@ -159,14 +202,4 @@ func init() {
 	initMetrics(ctx)
 
 	rootCmd.AddCommand(kbotCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// kbotCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// kbotCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
