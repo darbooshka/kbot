@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Launch Package (./kbot start)",
-            "preLaunchTask": "make_build",
+          //  "preLaunchTask": "make_build",
             "type": "go",
             "request": "launch",
             "mode": "auto",

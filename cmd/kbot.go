@@ -21,6 +21,8 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
 
 	telebot "gopkg.in/telebot.v3"
+
+	"github.com/darbooshka/kbot/event"
 )
 
 var (
@@ -77,11 +79,43 @@ func addEventToDataBase(c telebot.Context) error {
 	fmt.Println(err)
 
 	userID := c.Sender().ID
-	eventTime := time.Date(2009, 11, 17, 20, 34, 58, 651387237, time.UTC)
+	eventTime := time.Now().Add(time.Minute * 1)
 	rawdata := c.Text()
 
 	fmt.Printf("adding to db: %d %s %s", userID, eventTime, rawdata)
 
+	event1 := event.EventRecord{
+		UserID:    userID,
+		EventTime: eventTime,
+		RawData:   rawdata,
+	}
+	eventManager := event.GetEventManagerInstance()
+	eventManager.AddEventToDatabase(event1)
+
+	return err
+}
+
+func formatEventRecords(events []event.EventRecord) string {
+	var output string
+
+	for _, event := range events {
+		eventTimeString := event.EventTime.Format("2006-01-02 15:04")
+		eventString := fmt.Sprintf("EventTime:\n%s\nRawData:\n%s\n\n",
+			eventTimeString, event.RawData)
+		output += eventString
+	}
+
+	return output
+}
+
+func sortDataBaseEvents(c telebot.Context) error {
+	userID := c.Sender().ID
+
+	eventManager := event.GetEventManagerInstance()
+	futureEvents := formatEventRecords(eventManager.SortEvents(userID))
+	
+	err := c.Send(fmt.Sprintf("Hello I'm PMbot %s!\n You're sorting your added events\n\n%s", appVersion, futureEvents))
+	fmt.Println(c.Message().Payload) // <PAYLOAD>
 	return err
 }
 
@@ -167,9 +201,7 @@ to quickly create a Cobra application.`,
 		})
 
 		kbot.Handle("/sort_events", func(c telebot.Context) error {
-			err = c.Send(fmt.Sprintf("Hello I'm PMbot %s!\n You're sorting your added events", appVersion))
-			fmt.Println(c.Message().Payload) // <PAYLOAD>
-			return nil
+			return sortDataBaseEvents(c)
 		})
 
 		kbot.Handle("/add_event", func(c telebot.Context) error {
