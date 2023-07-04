@@ -113,8 +113,8 @@ func sortDataBaseEvents(c telebot.Context) error {
 
 	eventManager := event.GetEventManagerInstance()
 	futureEvents := formatEventRecords(eventManager.SortEvents(userID))
-	
-	err := c.Send(fmt.Sprintf("Hello I'm PMbot %s!\n You're sorting your added events\n\n%s", appVersion, futureEvents))
+
+	err := c.Send(fmt.Sprintf("Hello I'm PMbot %s!\n You're sorting your added future events\n\n%s", appVersion, futureEvents))
 	fmt.Println(c.Message().Payload) // <PAYLOAD>
 	return err
 }
