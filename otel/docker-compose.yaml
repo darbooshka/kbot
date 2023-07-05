@@ -61,4 +61,4 @@ services:
     ports:
       - "3002:3002"
   kbot:
-    image: darbooshka/kbot:v1.0.8-e17a2ea-amd64
+    image: darbooshka/kbot:v1.0.8-9082e66-amd64
