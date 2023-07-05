@@ -23,6 +23,7 @@ import (
 	telebot "gopkg.in/telebot.v3"
 
 	"github.com/darbooshka/kbot/event"
+	"github.com/darbooshka/datetimefinder"
 )
 
 var (
@@ -78,19 +79,29 @@ func addEventToDataBase(c telebot.Context) error {
 	err := c.Send(fmt.Sprintf("Hello I'm PMbot %s!\n You're adding event:\n\n\n%s", appVersion, c.Text()))
 	fmt.Println(err)
 
-	userID := c.Sender().ID
-	eventTime := time.Now().Add(time.Minute * 1)
-	rawdata := c.Text()
+	finder := datetimefinder.NewDateTimeFinder()
+	found := finder.FindDateTime(c.Text())
 
-	fmt.Printf("adding to db: %d %s %s", userID, eventTime, rawdata)
+	if len(found) == 0 {
+		fmt.Printf("no event detected, cannot add to db: %s", c.Text())
+		err := c.Send(fmt.Sprintf("no event detected, cannot add to db: %s", c.Text()))
+		fmt.Println(err)
+	} else {
+		userID := c.Sender().ID
+		eventTime := found[0]
+		// eventTime := time.Now().Add(time.Minute * 1)
+		rawdata := c.Text()
 
-	event1 := event.EventRecord{
-		UserID:    userID,
-		EventTime: eventTime,
-		RawData:   rawdata,
+		fmt.Printf("adding to db: %d %s %s", userID, eventTime, rawdata)
+
+		event1 := event.EventRecord{
+			UserID:    userID,
+			EventTime: eventTime,
+			RawData:   rawdata,
+		}
+		eventManager := event.GetEventManagerInstance()
+		eventManager.AddEventToDatabase(event1)
 	}
-	eventManager := event.GetEventManagerInstance()
-	eventManager.AddEventToDatabase(event1)
 
 	return err
 }
